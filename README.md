@@ -32,11 +32,11 @@ The app mirrors the Excelerate platform but simplifies it for faster navigation 
 ---    
 
 ## 🖼️ Screenshots    
- 
+
 
 ### 🔹 Login Screen    
-![Login Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/login_screen.png.png)    
-
+![Login Screen](https://raw.githubusercontent.com/ronithasanem/excelerate-inquisit/main/screenshots/login_screen.png)
+    
 ### 🔹 Home Screen    
 ![Home Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/home_screen.png.png)  
 
