@@ -43,7 +43,6 @@ The app mirrors the Excelerate platform but simplifies it for faster navigation 
 ### 🔹 Course Screen    
 [Course Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/course_screen.png)
 
-
 ### 🔹 Filter Screen    
 [Filter Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/filter_screen.png)  
 
@@ -55,6 +54,7 @@ The app mirrors the Excelerate platform but simplifies it for faster navigation 
 
 ### 🔹 Account Screen    
 [Account Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/account_screen.png)
+
 ---   
 
 
