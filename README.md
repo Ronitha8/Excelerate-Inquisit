@@ -35,25 +35,26 @@ The app mirrors the Excelerate platform but simplifies it for faster navigation 
 
 
 ### 🔹 Login Screen    
-![Login Screen](https://raw.githubusercontent.com/ronithasanem/excelerate-inquisit/main/screenshots/login_screen.png)
+[Login Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/login_screen.png)
     
 ### 🔹 Home Screen    
-![Home Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/home_screen.png.png)  
+[Home Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/home_screen.png)  
 
 ### 🔹 Course Screen    
-![Course Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/course_screen.png.png)    
+[Course Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/course_screen.png)
+
 
 ### 🔹 Filter Screen    
-![Filter Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/filter_screen.png.png)  
+[Filter Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/filter_screen.png)  
 
 ### 🔹 Notification Screen    
-![Notification Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/notification_screen.png.png)  
+[Notification Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/notification_screen.png)
 
 ### 🔹 Signup Screen    
-![Signup Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/signup_screen.png.png)  
+[Signup Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/signup_screen.png) 
 
 ### 🔹 Account Screen    
-![Account Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/account_screen.png.png)  
+[Account Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/account_screen.png)
 ---   
 
 
