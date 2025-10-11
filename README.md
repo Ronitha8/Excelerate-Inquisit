@@ -8,18 +8,17 @@
 ---    
 
 ## 🚀 Introduction    
-Excelerate Inquisit is a mobile app designed to extend the Excelerate learning experience beyond the website. It allows learners and administrators to access key features like courses, grades, evaluations, and dashboards directly through a mobile-friendly interface.  
-
-The app mirrors the Excelerate platform but simplifies it for faster navigation and a more engaging user experience.  
+Excelerate Inquisit is a mobile app designed to extend the Excelerate learning experience beyond the website. It's set up to reflect some parts of the main platform, giving users direct access to their profiles in a more simplified way for faster navigation and a more engaging user experience.  
 
 ---    
 
 ## 🧩 Core Features    
 - **Login & Authentication:** Secure login with email and password (mock data for demo).  
-- **Dashboard:** Displays enrolled courses, mock grades, and progress.  
-- **Evaluation Screen:** Allows users to rate courses (1–5) and leave feedback comments.  
-- **Admin Dashboard:** Shows feedback summaries and charts (mock data).  
-- **Profile Page:** Displays user info, settings, and logout option.  
+- **Dashboard:** Displays learning plan and enrolled courses, time spent learning, and progress.  
+- **Search Button:** Allows users to easily search for courses or available internships.  
+- **Message Screen:** Shows notifications and direct messages.  
+- **Profile Page:** Displays user info, settings and privacy, help and logout option.
+- **Course and Learning Modules:** Displays available courses
 
 ---    
 
@@ -61,7 +60,7 @@ The app mirrors the Excelerate platform but simplifies it for faster navigation 
 ## 📊 System Requirements    
 **Functional Requirements:**    
 - User authentication (mocked)  
-- Dashboards for learners & admins  
+- Dashboards for learners  
 - Course & evaluation modules  
 
 **Non-functional Requirements:**    
