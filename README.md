@@ -34,7 +34,7 @@ Excelerate Inquisit is a mobile app designed to extend the Excelerate learning e
 
 
 ### 🔹 Login Screen    
-[Login Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/login_screen.png)
+[image alt](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/account_screen.png)
     
 ### 🔹 Home Screen    
 [Home Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/home_screen.png)  
