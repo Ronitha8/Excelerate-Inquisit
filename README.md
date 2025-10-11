@@ -30,29 +30,28 @@ Excelerate Inquisit is a mobile app designed to extend the Excelerate learning e
 
 ---    
 
-## 🖼️ Screenshots    
+## 📸 Screenshots
 
+### 🔹 Login Screen  
+![Login Screen](screenshots/login_screen.png)
 
-### 🔹 Login Screen    
-[Login Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/login_screen.png)
-    
-### 🔹 Home Screen    
-[Home Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/home_screen.png)  
+### 🔹 Home Screen  
+![Home Screen](screenshots/home_screen.png)
 
-### 🔹 Course Screen    
-[Course Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/course_screen.png)
+### 🔹 Course Screen  
+![Course Screen](screenshots/course_screen.png)
 
-### 🔹 Filter Screen    
-[Filter Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/filter_screen.png)  
+### 🔹 Filter Screen  
+![Filter Screen](screenshots/filter_screen.png)
 
-### 🔹 Notification Screen    
-[Notification Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/notification_screen.png)
+### 🔹 Notification Screen  
+![Notification Screen](screenshots/notification_screen.png)
 
-### 🔹 Signup Screen    
-[Signup Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/signup_screen.png) 
+### 🔹 Signup Screen  
+![Signup Screen](screenshots/signup_screen.png)
 
-### 🔹 Account Screen    
-[Account Screen](https://raw.githubusercontent.com/Ronitha8/excelerate-inquisit/main/screenshots/account_screen.png)
+### 🔹 Account Screen  
+![Account Screen](screenshots/account_screen.png)
 
 ---   
 
