@@ -32,31 +32,30 @@ The app mirrors the Excelerate platform but simplifies it for faster navigation 
 ---    
 
 ## 🖼️ Screenshots    
-
-### 🔹 Lead: Charissa Sarah  
+ 
 
 ### 🔹 Login Screen    
-![Login Screen](screenshots/login_screen.png)    
+![Login Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/login_screen.png.png)    
 
 ### 🔹 Home Screen    
-![Home Screen](screenshots/home_screen.png)  
+![Home Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/home_screen.png.png)  
 
 ### 🔹 Course Screen    
-![Course Screen](screenshots/course_screen.png)    
+![Course Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/course_screen.png.png)    
 
 ### 🔹 Filter Screen    
-![Filter Screen](screenshots/filter_screen.png)  
+![Filter Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/filter_screen.png.png)  
 
 ### 🔹 Notification Screen    
-![Notification Screen](screenshots/notification_screen.png)  
+![Notification Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/notification_screen.png.png)  
 
 ### 🔹 Signup Screen    
-![Signup Screen](screenshots/signup_screen.png)  
+![Signup Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/signup_screen.png.png)  
 
 ### 🔹 Account Screen    
-![Account Screen](screenshots/account_screen.png)  
+![Account Screen](https://github.com/Ronitha8/Excelerate-Inquisit/blob/main/screenshots/account_screen.png.png)  
+---   
 
----    
 
 ## 📊 System Requirements    
 **Functional Requirements:**    
