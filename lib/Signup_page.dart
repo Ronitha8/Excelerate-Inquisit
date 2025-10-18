@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'Home_page.dart';
+import 'main.dart'; 
+import 'Login_page.dart';
 
 
 class SignUpScreen extends StatefulWidget {
@@ -15,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1E1B2E),
+      backgroundColor: kSignUpBackground,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -23,6 +26,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
+              const Text(
+                'Welcome to Excelerate',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
               const Text(
                 'Sign Up',
                 style: TextStyle(
@@ -44,7 +56,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   labelText: 'Your Email',
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
-                  fillColor: const Color(0xFF2C2746),
+                  fillColor: kTextFieldFill,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -61,7 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   labelText: 'Password',
                   labelStyle: const TextStyle(color: Colors.white70),
                   filled: true,
-                  fillColor: const Color(0xFF2C2746),
+                  fillColor: kTextFieldFill,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
@@ -87,13 +99,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (_) => const HomeScreen()),
-                    // );
+                    // Navigate to the HomeScreen
+                    Navigator.pushReplacement( 
+                      context,
+                      MaterialPageRoute(builder: (_) => const HomeScreen()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4C5AFE),
+                    backgroundColor: kPrimaryButton,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -116,7 +129,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   Checkbox(
                     value: _agreeToTerms,
-                    activeColor: const Color(0xFF4C5AFE),
+                    activeColor:  kPrimaryButton,
                     onChanged: (value) {
                       setState(() {
                         _agreeToTerms = value ?? false;
@@ -133,30 +146,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               const SizedBox(height: 30),
 
-              // Login text
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Already have an account? ',
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
-                      print('Navigate to Login Page');
-                    },
-                    child: const Text(
-                      'Log in',
-                      style: TextStyle(
-                        color: Color(0xFF4C5AFE),
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
-                      ),
+            // Login text
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Already have an account? ',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    );
+                  },
+                  child: const Text(
+                    'Log in',
+                    style: TextStyle(
+                      color: kPrimaryButton,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+
 
             ],
           ),
