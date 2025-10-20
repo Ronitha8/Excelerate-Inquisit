@@ -5,12 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'login_screen.dart';
+import 'course_screen.dart';
 
 // --- Color Constants (Shared) ---
 const Color kDarkBackground = Color(0xFF1E1B36); // Main background (HomeScreen)
-const Color kHeaderBackground = Color(
-  0xFF2F295B,
-); // Top background / progress card
+const Color kHeaderBackground = Color(0xFF2F295B); // Top background / progress card
 const Color kPurple = Color(0xFFC259D4); // Excelerate Purple/Pink
 const Color kOrange = Color(0xFFFF8C4B); // Get Started Button
 const Color kLightBlueCard = Color(0xFFD3E1FF); // Horizontal Card background
@@ -20,9 +19,7 @@ const Color kProgressRemaining = Color(0xFF4B477A);
 const Color kBottomNavActive = Color(0xFF7C3AED);
 
 // --- Auth Screen Constants ---
-const Color kSignUpBackground = Color(
-  0xFF1E1B2E,
-); // Darker background for auth screen
+const Color kSignUpBackground = Color(0xFF1E1B2E); // Darker background for auth screen
 const Color kTextFieldFill = Color(0xFF2C2746); // Input field background
 const Color kPrimaryButton = Color(0xFF4C5AFE); // Sign Up/Login Button
 
@@ -45,10 +42,14 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: kDarkBackground,
         useMaterial3: true,
       ),
-      // App starts on the SignUpScreen
-      home: StreamBuilder(
+      // Define any named routes here
+      routes: {
+        '/courses': (context) => CourseScreen(),
+      },
+      // Auth routing logic
+      home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (ctx, snapshot) {
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
           }
