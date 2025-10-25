@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "50794013537",
+    "project_id": "excelerate-inquisit",
+    "storage_bucket": "excelerate-inquisit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50794013537:android:214bc4b07a4f9e4f2c5b20",
+        "android_client_info": {
+          "package_name": "com.example.excelerate_inquisit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2WDz_dOPh_HpmN_Q2kr4ahFsXWjibXMo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

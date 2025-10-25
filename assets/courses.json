@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "title": "Artificial Intelligence & Machine Learning",
+    "description": "Master AI concepts, neural networks, and practical ML applications using TensorFlow and Python.",
+    "image": "assets/images/ai.jpg",
+    "duration": "8 weeks",
+    "level": "Intermediate",
+    "instructor": "Dr. Sarah Johnson"
+  },
+  {
+    "id": "2",
+    "title": "Data Science with Python",
+    "description": "Learn data analysis, visualization, and predictive modeling with Python, Pandas, and Matplotlib.",
+    "image": "assets/images/data_science.jpg",
+    "duration": "6 weeks",
+    "level": "Beginner",
+    "instructor": "Prof. Michael Lee"
+  },
+  {
+    "id": "3",
+    "title": "Cybersecurity Fundamentals",
+    "description": "Understand network security, ethical hacking, and threat mitigation techniques.",
+    "image": "assets/images/cyber_security.jpg",
+    "duration": "10 weeks",
+    "level": "Intermediate",
+    "instructor": "Emma Davis"
+  },
+  {
+    "id": "4",
+    "title": "UI/UX Design Mastery",
+    "description": "Create user-friendly interfaces with Figma, focusing on design principles and prototyping.",
+    "image": "assets/images/ui_ux.jpg",
+    "duration": "5 weeks",
+    "level": "Beginner",
+    "instructor": "Alex Carter"
+  },
+  {
+    "id": "5",
+    "title": "Cloud Computing with AWS",
+    "description": "Explore cloud architecture, deployment, and AWS services like EC2 and S3.",
+    "image": "assets/images/cloud.jpg",
+    "duration": "7 weeks",
+    "level": "Advanced",
+    "instructor": "Dr. Priya Sharma"
+  },
+  {
+    "id": "6",
+    "title": "Full-Stack Web Development",
+    "description": "Build modern web apps with React, Node.js, and MongoDB from scratch.",
+    "image": "assets/images/web_dev.jpg",
+    "duration": "12 weeks",
+    "level": "Intermediate",
+    "instructor": "James Wilson"
+  }
+]

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'home_screen.dart';
 
 final _firebase = FirebaseAuth.instance;
 
@@ -18,50 +19,67 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+      setState(() => _isLoading = true);
       try {
         await _firebase.signInWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
         );
         if (!mounted) return;
-      } on FirebaseAuthException catch (error) {
-        if (error.code == 'email-aready-in-use') {
-          // ...
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login successful!')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } on FirebaseAuthException catch (e) {
+        String message;
+        if (e.code == 'user-not-found') {
+          message = 'No user found for that email. Kindly sign up to log in.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Incorrect password. Please confirm your password and try again.';
+        } else if (e.code == 'invalid-email') {
+          message = 'Invalid email format.';
+        } else {
+          message = 'Error: ${e.message}';
         }
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An error occurred: ${error.message}'),
-            duration: Duration(seconds: 3),
-          ),
+          SnackBar(content: Text(message)),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('An unexpected error occurred.')),
         );
       }
+      setState(() => _isLoading = false);
     }
   }
 
   void _handleForgotPassword() {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Reset Password'),
-            content: const Text('Password reset link sent to your email.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Reset Password'),
+        content: const Text('Password reset link sent to your email.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
           ),
+        ],
+      ),
     );
   }
 
   void _handleSignUp() {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => SignUpScreen()));
+    Navigator.push(context, MaterialPageRoute(builder: (_) => const SignUpScreen()));
   }
 
   void _handleGoogleLogin() {
@@ -89,7 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
               height: size.height * 0.15,
               padding: const EdgeInsets.only(top: 80, left: 25),
               alignment: Alignment.topLeft,
-
               child: Text(
                 "Log In",
                 style: GoogleFonts.poppins(
@@ -99,10 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 40),
-
-            // Email Field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Form(
@@ -119,13 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     TextFormField(
-                      validator:
-                          (value) =>
-                              value == null ||
-                                      value.isEmpty ||
-                                      !value.contains('@')
-                                  ? 'Please enter a valid email'
-                                  : null,
+                      validator: (value) =>
+                          value == null || value.isEmpty || !value.contains('@')
+                              ? 'Please enter a valid email'
+                              : null,
                       controller: emailController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
@@ -147,10 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 25),
-
-            // Password Field
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Column(
@@ -162,11 +170,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                    validator:
-                        (value) =>
-                            value == null || value.isEmpty || value.length < 6
-                                ? 'Password must be at least 6 characters'
-                                : null,
+                    validator: (value) =>
+                        value == null || value.isEmpty || value.length < 6
+                            ? 'Password must be at least 6 characters'
+                            : null,
                     controller: passwordController,
                     obscureText: _obscurePassword,
                     style: const TextStyle(color: Colors.white),
@@ -177,9 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fillColor: const Color(0xFF2C2B3F),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
                           color: Colors.grey,
                         ),
                         onPressed: () {
@@ -201,10 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Forget Password
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Align(
@@ -218,10 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 10),
-
-            // Log In Button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: SizedBox(
@@ -234,22 +233,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: _submit,
-                  child: const Text(
-                    "Log In",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
+                  onPressed: _isLoading ? null : _submit,
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text(
+                          "Log In",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
             ),
-
             const SizedBox(height: 20),
-
-            // Sign up
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -266,9 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
-
             Row(
               children: const [
                 Expanded(
@@ -283,9 +283,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 20),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -302,7 +300,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 40),
           ],
         ),

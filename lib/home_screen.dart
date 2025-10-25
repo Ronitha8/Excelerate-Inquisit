@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
+import 'course_screen.dart'; // ADDED: Import for CourseScreen navigation
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -57,10 +58,8 @@ class TopHeaderSection extends StatelessWidget {
               Image.asset(
                 'assets/images/Excelerate_logo.png',
                 width: 200,
-
                 fit: BoxFit.contain,
               ),
-
               // Avatar (Mock)
               PopupMenuButton(
                 onSelected: (value) async {
@@ -68,13 +67,12 @@ class TopHeaderSection extends StatelessWidget {
                     await FirebaseAuth.instance.signOut();
                   }
                 },
-                itemBuilder:
-                    (context) => [
-                      const PopupMenuItem(
-                        value: 'logout',
-                        child: Text('Logout'),
-                      ),
-                    ],
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 'logout',
+                    child: Text('Logout'),
+                  ),
+                ],
                 child: const CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.white,
@@ -119,7 +117,7 @@ class LearningProgressCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -315,7 +313,7 @@ class HorizontalLearningCards extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black.withOpacity(0.8),
+                    color: Colors.black.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -450,7 +448,7 @@ class MeetupBanner extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: Colors.purple.withValues(alpha: 0.3),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -512,7 +510,7 @@ class MeetupBanner extends StatelessWidget {
   }
 }
 
-// 6. CUSTOM BOTTOM NAVIGATION BAR
+// 6. CUSTOM BOTTOM NAVIGATION BAR (UPDATED WITH NAVIGATION)
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({super.key});
 
@@ -527,7 +525,7 @@ class CustomBottomNavBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -536,28 +534,40 @@ class CustomBottomNavBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: const [
-          NavBarItem(icon: Icons.home, label: 'Home', isActive: true),
-          NavBarItem(icon: Icons.menu_book, label: 'Course'),
-          NavBarItem(icon: Icons.search, label: 'Search'),
-          NavBarItem(icon: Icons.message, label: 'Message'),
-          NavBarItem(icon: Icons.person, label: 'Account'),
+        children: [
+          const NavBarItem(icon: Icons.home, label: 'Home', isActive: true),
+          NavBarItem(
+            icon: Icons.menu_book,
+            label: 'Course',
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CourseScreen()),
+              );
+            },
+          ),
+          const NavBarItem(icon: Icons.search, label: 'Search'),
+          const NavBarItem(icon: Icons.message, label: 'Message'),
+          const NavBarItem(icon: Icons.person, label: 'Account'),
         ],
       ),
     );
   }
 }
 
+// UPDATED NavBarItem CLASS WITH onTap SUPPORT
 class NavBarItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isActive;
+  final VoidCallback? onTap; // ADDED: Optional onTap callback
 
   const NavBarItem({
     super.key,
     required this.icon,
     required this.label,
     this.isActive = false,
+    this.onTap, // ADDED: onTap parameter
   });
 
   @override
@@ -565,7 +575,7 @@ class NavBarItem extends StatelessWidget {
     final color = isActive ? kBottomNavActive : kSecondaryText;
 
     return InkWell(
-      onTap: () {},
+      onTap: onTap ?? () {}, // UPDATED: Use onTap if provided, otherwise do nothing
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
