@@ -28,7 +28,12 @@ Excelerate Inquisit is a mobile app designed to extend the Excelerate learning e
 - **Design Tool:** Figma  
 - **Version Control:** GitHub  
 
----    
+---
+
+## 🎥 App Demo Video Links
+[🎥 Watch App Demo Video](https://drive.google.com/file/d/1tvOYKwBXqjRwf4HtQb6beYSVaaCAoNdf/view?usp=drivesdk)
+
+---
 
 ## 📸 Screenshots
 
