@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'course_screen.dart'; // ADDED: Import for CourseScreen navigation
+import 'message_screen.dart'; // ADDED: Import for MessageScreen navigation
+import 'search_screen.dart'; // ADDED: Import for SearchScreen navigation
+import 'account_screen.dart'; // ADDED: Import for AccountScreen navigation
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,22 +16,16 @@ class HomeScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // 1. Header/App Bar Area
-            const TopHeaderSection(),
-            // 2. Learning Progress Card
-            const LearningProgressCard(),
-            // 3. Horizontal Learning Cards
-            const HorizontalLearningCards(),
-            // 4. Learning Plan Section
-            const LearningPlanSection(),
-            // 5. Meetup Banner
-            const MeetupBanner(),
-            const SizedBox(height: 20),
+          children: const <Widget>[
+            TopHeaderSection(),
+            LearningProgressCard(),
+            HorizontalLearningCards(),
+            LearningPlanSection(),
+            MeetupBanner(),
+            SizedBox(height: 20),
           ],
         ),
       ),
-      // 6. Custom Bottom Navigation Bar
       bottomNavigationBar: const CustomBottomNavBar(),
     );
   }
@@ -60,19 +57,15 @@ class TopHeaderSection extends StatelessWidget {
                 width: 200,
                 fit: BoxFit.contain,
               ),
-              // Avatar (Mock)
-              PopupMenuButton(
-                onSelected: (value) async {
-                  if (value == 'logout') {
-                    await FirebaseAuth.instance.signOut();
-                  }
+              // Avatar navigates to Account Screen
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AccountScreen()),
+                  );
                 },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'logout',
-                    child: Text('Logout'),
-                  ),
-                ],
+                borderRadius: BorderRadius.circular(50),
                 child: const CircleAvatar(
                   radius: 20,
                   backgroundColor: Colors.white,
@@ -82,7 +75,6 @@ class TopHeaderSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          // Greeting
           const Text(
             "Let's start learning",
             style: TextStyle(
@@ -103,7 +95,6 @@ class LearningProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Current progress: 46 minutes out of 60.
     const int currentProgress = 46;
     const int totalGoal = 60;
     final double progressFraction = currentProgress / totalGoal;
@@ -157,8 +148,7 @@ class LearningProgressCard extends StatelessWidget {
             ),
             const SizedBox(height: 5),
             Text(
-              '$currentProgress'
-              'min',
+              '$currentProgress min',
               style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -166,8 +156,7 @@ class LearningProgressCard extends StatelessWidget {
               ),
             ),
             Text(
-              '/ $totalGoal'
-              'min',
+              '/ $totalGoal min',
               style: const TextStyle(
                 fontSize: 14,
                 color: kSecondaryText,
@@ -175,7 +164,6 @@ class LearningProgressCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            // Custom Progress Bar
             Stack(
               children: [
                 Container(
@@ -230,7 +218,6 @@ class HorizontalLearningCards extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             scrollDirection: Axis.horizontal,
             children: <Widget>[
-              // Primary Card (UI/UX)
               _buildLearningCard(
                 title: 'Start your UI/UX journey',
                 buttonText: 'Get Started',
@@ -242,7 +229,6 @@ class HorizontalLearningCards extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 15),
-              // Secondary Card (Progress Review)
               _buildLearningCard(
                 title: 'Review your progress',
                 buttonText: 'Check Report',
@@ -254,7 +240,6 @@ class HorizontalLearningCards extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 15),
-              // 3rd Card (Figma)
               _buildLearningCard(
                 title: 'New: Mastering Figma',
                 buttonText: 'Enroll Now',
@@ -266,7 +251,6 @@ class HorizontalLearningCards extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 15),
-              // 4th Card (Coding)
               _buildLearningCard(
                 title: 'Become a great coder',
                 buttonText: 'View Path',
@@ -300,14 +284,13 @@ class HorizontalLearningCards extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Illustration on the right
           Positioned(right: -20, bottom: -20, child: illustration),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 180, // Limit text width for layout
+                width: 180,
                 child: Text(
                   title,
                   style: TextStyle(
@@ -398,7 +381,6 @@ class LearningPlanSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          // Radio/Checkmark Mock
           Icon(
             isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
             color: isCompleted ? Colors.green : kSecondaryText,
@@ -457,7 +439,6 @@ class MeetupBanner extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Text Content
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
@@ -485,7 +466,7 @@ class MeetupBanner extends StatelessWidget {
                 backgroundColor: Color(0xFFFEE2E2),
                 radius: 15,
                 child: Icon(Icons.person, size: 18, color: Color(0xFFEF4444)),
-              ), // Pink
+              ),
               Transform.translate(
                 offset: const Offset(-8, 0),
                 child: const CircleAvatar(
@@ -493,7 +474,7 @@ class MeetupBanner extends StatelessWidget {
                   radius: 15,
                   child: Icon(Icons.person, size: 18, color: Color(0xFFF97316)),
                 ),
-              ), // Orange
+              ),
               Transform.translate(
                 offset: const Offset(-16, 0),
                 child: const CircleAvatar(
@@ -501,7 +482,7 @@ class MeetupBanner extends StatelessWidget {
                   radius: 15,
                   child: Icon(Icons.person, size: 18, color: Color(0xFF3B82F6)),
                 ),
-              ), // Blue
+              ),
             ],
           ),
         ],
@@ -510,7 +491,7 @@ class MeetupBanner extends StatelessWidget {
   }
 }
 
-// 6. CUSTOM BOTTOM NAVIGATION BAR (UPDATED WITH NAVIGATION)
+// 6. CUSTOM BOTTOM NAVIGATION BAR
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({super.key});
 
@@ -546,28 +527,49 @@ class CustomBottomNavBar extends StatelessWidget {
               );
             },
           ),
-          const NavBarItem(icon: Icons.search, label: 'Search'),
-          const NavBarItem(icon: Icons.message, label: 'Message'),
-          const NavBarItem(icon: Icons.person, label: 'Account'),
+          NavBarItem(
+            icon: Icons.search,
+            label: 'Search',
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchScreen()));
+            },
+          ),
+          NavBarItem(
+            icon: Icons.message,
+            label: 'Message',
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MessageScreen()));
+            },
+          ),
+          NavBarItem(
+            icon: Icons.person,
+            label: 'Account',
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AccountScreen()));
+            },
+          ),
         ],
       ),
     );
   }
 }
 
-// UPDATED NavBarItem CLASS WITH onTap SUPPORT
+// NavBar Item Widget
 class NavBarItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool isActive;
-  final VoidCallback? onTap; // ADDED: Optional onTap callback
+  final VoidCallback? onTap;
 
   const NavBarItem({
     super.key,
     required this.icon,
     required this.label,
     this.isActive = false,
-    this.onTap, // ADDED: onTap parameter
+    this.onTap,
   });
 
   @override
@@ -575,7 +577,7 @@ class NavBarItem extends StatelessWidget {
     final color = isActive ? kBottomNavActive : kSecondaryText;
 
     return InkWell(
-      onTap: onTap ?? () {}, // UPDATED: Use onTap if provided, otherwise do nothing
+      onTap: onTap ?? () {},
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
