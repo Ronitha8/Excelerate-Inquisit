@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'login_screen.dart';
+import 'package:excelerate_inquisit/constants.dart';
+import 'package:excelerate_inquisit/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-final _firebaseAuth = FirebaseAuth.instance;
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,22 +21,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        await _firebaseAuth.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text,
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
         );
         if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account created successfully!')),
+        );
         Navigator.of(context).pop();
       } on FirebaseAuthException catch (error) {
-        if (error.code == 'email-aready-in-use') {
-          // ...
+        String message = 'An error occurred';
+        if (error.code == 'email-already-in-use') {
+          message = 'This email is already in use.';
+        } else if (error.code == 'weak-password') {
+          message = 'Password is too weak.';
+        } else if (error.code == 'invalid-email') {
+          message = 'Invalid email format.';
         }
         ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('An error occurred: ${error.message}'),
-            duration: Duration(seconds: 3),
-          ),
+          SnackBar(content: Text(message)),
         );
       }
     }
@@ -57,41 +60,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 40),
-                const Text(
+                Text(
                   'Welcome to Excelerate',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: kPrimaryText,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'Sign Up',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: kPrimaryText,
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'Enter your details below & free sign up',
-                  style: TextStyle(color: Colors.white70, fontSize: 14),
+                  style: TextStyle(color: kSecondaryText, fontSize: 14),
                 ),
                 const SizedBox(height: 40),
-
                 // Email field
                 TextFormField(
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? 'Please enter your email'
+                  validator: (value) =>
+                      value == null || value.trim().isEmpty
+                          ? 'Please enter your email'
+                          : !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                  .hasMatch(value)
+                              ? 'Invalid email format'
                               : null,
                   controller: emailController,
                   decoration: InputDecoration(
                     labelText: 'Your Email',
-                    labelStyle: const TextStyle(color: Colors.white70),
+                    labelStyle: TextStyle(color: kSecondaryText),
                     filled: true,
                     fillColor: kTextFieldFill,
                     border: OutlineInputBorder(
@@ -99,22 +103,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: kPrimaryText),
                 ),
                 const SizedBox(height: 20),
-
                 // Password field
                 TextFormField(
-                  validator:
-                      (value) =>
-                          value == null || value.isEmpty
-                              ? 'Please enter your password'
+                  validator: (value) =>
+                      value == null || value.trim().isEmpty
+                          ? 'Please enter your password'
+                          : value.length < 6
+                              ? 'Password must be at least 6 characters'
                               : null,
                   controller: passwordController,
                   obscureText: _obscureText,
                   decoration: InputDecoration(
                     labelText: 'Password',
-                    labelStyle: const TextStyle(color: Colors.white70),
+                    labelStyle: TextStyle(color: kSecondaryText),
                     filled: true,
                     fillColor: kTextFieldFill,
                     border: OutlineInputBorder(
@@ -123,8 +127,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.white54,
+                        _obscureText
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: kSecondaryText,
                       ),
                       onPressed: () {
                         setState(() {
@@ -133,15 +139,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                     ),
                   ),
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: kPrimaryText),
                 ),
                 const SizedBox(height: 30),
-
                 // Create Account Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submit,
+                    onPressed: _agreeToTerms ? _submit : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: kPrimaryButton,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -149,10 +154,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Create account',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: kPrimaryText,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -160,7 +165,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 // Checkbox
                 Row(
                   children: [
@@ -173,34 +177,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         });
                       },
                     ),
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         'By creating an account you agree with our terms & conditions.',
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                        style: TextStyle(color: kSecondaryText, fontSize: 13),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 30),
-
                 // Login text
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       'Already have an account? ',
-                      style: TextStyle(color: Colors.white70),
+                      style: TextStyle(color: kSecondaryText),
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                             builder: (_) => const LoginScreen(),
                           ),
                         );
                       },
-                      child: const Text(
+                      child: Text(
                         'Log in',
                         style: TextStyle(
                           color: kPrimaryButton,
@@ -216,5 +219,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }

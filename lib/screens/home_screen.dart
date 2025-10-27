@@ -1,10 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
-import 'course_screen.dart'; // ADDED: Import for CourseScreen navigation
-import 'message_screen.dart'; // ADDED: Import for MessageScreen navigation
-import 'search_screen.dart'; // ADDED: Import for SearchScreen navigation
-import 'account_screen.dart'; // ADDED: Import for AccountScreen navigation
+import 'package:excelerate_inquisit/constants.dart';
+import 'package:excelerate_inquisit/screens/course_screen.dart';
+import 'package:excelerate_inquisit/screens/message_screen.dart';
+import 'package:excelerate_inquisit/screens/search_screen.dart';
+import 'package:excelerate_inquisit/screens/account_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -31,7 +31,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-// 1. TOP HEADER SECTION
 class TopHeaderSection extends StatelessWidget {
   const TopHeaderSection({super.key});
 
@@ -53,16 +52,15 @@ class TopHeaderSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Image.asset(
-                'assets/images/Excelerate_logo.png',
+                'assets/images/excelerate_logo.png',
                 width: 200,
                 fit: BoxFit.contain,
               ),
-              // Avatar navigates to Account Screen
               InkWell(
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AccountScreen()),
+                    MaterialPageRoute(builder: (context) => const AccountScreen()),
                   );
                 },
                 borderRadius: BorderRadius.circular(50),
@@ -75,9 +73,9 @@ class TopHeaderSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const Text(
+          Text(
             "Let's start learning",
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: kSecondaryText,
               fontWeight: FontWeight.w500,
@@ -89,7 +87,6 @@ class TopHeaderSection extends StatelessWidget {
   }
 }
 
-// 2. LEARNING PROGRESS CARD
 class LearningProgressCard extends StatelessWidget {
   const LearningProgressCard({super.key});
 
@@ -108,7 +105,7 @@ class LearningProgressCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withAlpha((0.2 * 255).round()),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -120,24 +117,29 @@ class LearningProgressCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'Learned today',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: kSecondaryText,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CourseScreen()),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
-                  child: const Text(
+                  child: Text(
                     'My courses',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 12,
                       color: kSecondaryText,
                       fontWeight: FontWeight.w500,
@@ -149,7 +151,7 @@ class LearningProgressCard extends StatelessWidget {
             const SizedBox(height: 5),
             Text(
               '$currentProgress min',
-              style: const TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
                 color: kPrimaryText,
@@ -157,7 +159,7 @@ class LearningProgressCard extends StatelessWidget {
             ),
             Text(
               '/ $totalGoal min',
-              style: const TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 14,
                 color: kSecondaryText,
                 fontWeight: FontWeight.w400,
@@ -192,7 +194,6 @@ class LearningProgressCard extends StatelessWidget {
   }
 }
 
-// 3. HORIZONTAL LEARNING CARDS
 class HorizontalLearningCards extends StatelessWidget {
   const HorizontalLearningCards({super.key});
 
@@ -201,11 +202,11 @@ class HorizontalLearningCards extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+        Padding(
+          padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
           child: Text(
             'What do you want to learn today?',
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: kPrimaryText,
@@ -225,41 +226,60 @@ class HorizontalLearningCards extends StatelessWidget {
                 illustration: const Icon(
                   Icons.palette_outlined,
                   size: 100,
-                  color: Color(0xFF4C5AFE),
+                  color: kCardBlue,
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CourseScreen()),
+                  );
+                },
               ),
               const SizedBox(width: 15),
               _buildLearningCard(
                 title: 'Review your progress',
                 buttonText: 'Check Report',
-                backgroundColor: const Color(0xFFFDEBEE),
+                backgroundColor: kCardRed,
                 illustration: const Icon(
                   Icons.stacked_line_chart,
                   size: 100,
-                  color: Color(0xFFC259D4),
+                  color: kPurple,
                 ),
+                onTap: () {},
               ),
               const SizedBox(width: 15),
               _buildLearningCard(
                 title: 'New: Mastering Figma',
                 buttonText: 'Enroll Now',
-                backgroundColor: const Color(0xFFFFECCC),
+                backgroundColor: kCardYellow,
                 illustration: const Icon(
                   Icons.design_services_outlined,
                   size: 100,
-                  color: Color(0xFFFF8C4B),
+                  color: kOrange,
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CourseScreen()),
+                  );
+                },
               ),
               const SizedBox(width: 15),
               _buildLearningCard(
                 title: 'Become a great coder',
                 buttonText: 'View Path',
-                backgroundColor: const Color(0xFFDDFDDC),
+                backgroundColor: kCardGreen,
                 illustration: const Icon(
                   Icons.code,
                   size: 100,
                   color: Colors.green,
                 ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CourseScreen()),
+                  );
+                },
               ),
               const SizedBox(width: 15),
             ],
@@ -274,6 +294,7 @@ class HorizontalLearningCards extends StatelessWidget {
     required String buttonText,
     required Color backgroundColor,
     required Widget illustration,
+    required VoidCallback onTap,
   }) {
     return Container(
       width: 280,
@@ -293,16 +314,16 @@ class HorizontalLearningCards extends StatelessWidget {
                 width: 180,
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black.withValues(alpha: 0.8),
+                    color: Colors.black.withAlpha((0.8 * 255).round()),
                   ),
                 ),
               ),
               const SizedBox(height: 15),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: onTap,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kOrange,
                   foregroundColor: kPrimaryText,
@@ -314,7 +335,10 @@ class HorizontalLearningCards extends StatelessWidget {
                     vertical: 10,
                   ),
                 ),
-                child: Text(buttonText),
+                child: Text(
+                  buttonText,
+                  style: GoogleFonts.poppins(fontSize: 14),
+                ),
               ),
             ],
           ),
@@ -324,7 +348,6 @@ class HorizontalLearningCards extends StatelessWidget {
   }
 }
 
-// 4. LEARNING PLAN SECTION
 class LearningPlanSection extends StatelessWidget {
   const LearningPlanSection({super.key});
 
@@ -341,9 +364,9 @@ class LearningPlanSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Learning Plan',
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: kPrimaryText,
@@ -360,10 +383,18 @@ class LearningPlanSection extends StatelessWidget {
           const SizedBox(height: 10),
           Center(
             child: TextButton(
-              onPressed: () {},
-              child: const Text(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CourseScreen()),
+                );
+              },
+              child: Text(
                 'more',
-                style: TextStyle(color: kPurple, fontWeight: FontWeight.bold),
+                style: GoogleFonts.poppins(
+                  color: kPurple,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -390,7 +421,7 @@ class LearningPlanSection extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 fontSize: 16,
                 color: kPrimaryText,
                 decoration: isCompleted ? TextDecoration.lineThrough : null,
@@ -400,7 +431,7 @@ class LearningPlanSection extends StatelessWidget {
           ),
           Text(
             progress,
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
               fontSize: 16,
               color: kSecondaryText,
               fontWeight: FontWeight.w600,
@@ -412,7 +443,6 @@ class LearningPlanSection extends StatelessWidget {
   }
 }
 
-// 5. MEETUP BANNER
 class MeetupBanner extends StatelessWidget {
   const MeetupBanner({super.key});
 
@@ -424,13 +454,13 @@ class MeetupBanner extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         gradient: const LinearGradient(
-          colors: [Color(0xFF8F5AE6), Color(0xFFC259D4)],
+          colors: [kMeetupStart, kMeetupEnd],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withValues(alpha: 0.3),
+            color: kPurple.withAlpha((0.3 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -441,21 +471,24 @@ class MeetupBanner extends StatelessWidget {
         children: [
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 'Meetup',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.w900,
                   color: kPrimaryText,
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               SizedBox(
                 width: 180,
                 child: Text(
                   'Off-line exchange of learning experiences',
-                  style: TextStyle(fontSize: 14, color: kPrimaryText),
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: kPrimaryText,
+                  ),
                 ),
               ),
             ],
@@ -463,24 +496,24 @@ class MeetupBanner extends StatelessWidget {
           Row(
             children: [
               const CircleAvatar(
-                backgroundColor: Color(0xFFFEE2E2),
+                backgroundColor: kAvatarRed,
                 radius: 15,
-                child: Icon(Icons.person, size: 18, color: Color(0xFFEF4444)),
+                child: Icon(Icons.person, size: 18, color: kAvatarRedIcon),
               ),
               Transform.translate(
                 offset: const Offset(-8, 0),
                 child: const CircleAvatar(
-                  backgroundColor: Color(0xFFFFEDD5),
+                  backgroundColor: kAvatarYellow,
                   radius: 15,
-                  child: Icon(Icons.person, size: 18, color: Color(0xFFF97316)),
+                  child: Icon(Icons.person, size: 18, color: kAvatarYellowIcon),
                 ),
               ),
               Transform.translate(
                 offset: const Offset(-16, 0),
                 child: const CircleAvatar(
-                  backgroundColor: Color(0xFFDBEAFE),
+                  backgroundColor: kAvatarBlue,
                   radius: 15,
-                  child: Icon(Icons.person, size: 18, color: Color(0xFF3B82F6)),
+                  child: Icon(Icons.person, size: 18, color: kAvatarBlueIcon),
                 ),
               ),
             ],
@@ -491,7 +524,6 @@ class MeetupBanner extends StatelessWidget {
   }
 }
 
-// 6. CUSTOM BOTTOM NAVIGATION BAR
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({super.key});
 
@@ -506,7 +538,7 @@ class CustomBottomNavBar extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
+            color: Colors.black.withAlpha((0.4 * 255).round()),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -523,7 +555,7 @@ class CustomBottomNavBar extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CourseScreen()),
+                MaterialPageRoute(builder: (context) => const CourseScreen()),
               );
             },
           ),
@@ -531,24 +563,30 @@ class CustomBottomNavBar extends StatelessWidget {
             icon: Icons.search,
             label: 'Search',
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SearchScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchScreen()),
+              );
             },
           ),
           NavBarItem(
             icon: Icons.message,
             label: 'Message',
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MessageScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MessageScreen()),
+              );
             },
           ),
           NavBarItem(
             icon: Icons.person,
             label: 'Account',
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AccountScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AccountScreen()),
+              );
             },
           ),
         ],
@@ -557,7 +595,6 @@ class CustomBottomNavBar extends StatelessWidget {
   }
 }
 
-// NavBar Item Widget
 class NavBarItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -585,7 +622,7 @@ class NavBarItem extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
+            style: GoogleFonts.poppins(
               color: color,
               fontSize: 11,
               fontWeight: isActive ? FontWeight.bold : FontWeight.normal,

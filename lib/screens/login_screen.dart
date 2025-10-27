@@ -1,4 +1,4 @@
-import 'package:excelerate_inquisit/signup_screen.dart';
+import 'package:excelerate_inquisit/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
