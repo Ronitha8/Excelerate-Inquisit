@@ -65,6 +65,8 @@ dependencies:
 ## 🎥 App Demo Video Links
 [🎥 Watch App Demo Video](https://drive.google.com/file/d/1tvOYKwBXqjRwf4HtQb6beYSVaaCAoNdf/view?usp=drivesdk)
 
+[🎬 Watch UPDATED App Demo Video](https://drive.google.com/file/d/1Oke2u329lDAGPYFbgaGrhosjdoyDadxh/view?usp=drive_link)
+
 ---
 
 ## 📸 Screenshots
