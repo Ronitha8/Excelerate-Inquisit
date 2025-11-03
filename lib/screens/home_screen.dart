@@ -1,635 +1,509 @@
+// lib/screens/home_screen.dart
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:excelerate_inquisit/constants.dart';
+import 'package:excelerate_inquisit/models/program_model.dart';
+import 'package:excelerate_inquisit/screens/program_details_page.dart';
+import 'package:excelerate_inquisit/screens/my_courses_screen.dart';
+import 'package:excelerate_inquisit/screens/favorites_screen.dart';
+import 'package:excelerate_inquisit/screens/notifications_screen.dart';
+import 'package:excelerate_inquisit/screens/peer_users_screen.dart';
 import 'package:excelerate_inquisit/screens/course_screen.dart';
 import 'package:excelerate_inquisit/screens/message_screen.dart';
-import 'package:excelerate_inquisit/screens/search_screen.dart';
 import 'package:excelerate_inquisit/screens/account_screen.dart';
+import 'package:excelerate_inquisit/user_progress.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kDarkBackground,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const <Widget>[
-            TopHeaderSection(),
-            LearningProgressCard(),
-            HorizontalLearningCards(),
-            LearningPlanSection(),
-            MeetupBanner(),
-            SizedBox(height: 20),
-          ],
-        ),
-      ),
-      bottomNavigationBar: const CustomBottomNavBar(),
-    );
-  }
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class TopHeaderSection extends StatelessWidget {
-  const TopHeaderSection({super.key});
+class _HomeScreenState extends State<HomeScreen> {
+  String _gender = 'male';
+  String? _selectedScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    _gender = user?.photoURL?.contains('female') == true ? 'female' : 'male';
+  }
+
+  final _screens = {
+    'My Courses': const MyCoursesScreen(),
+    'Favorites': const FavoritesScreen(),
+    'Notifications': const NotificationsScreen(),
+    'Account': const AccountScreen(),
+  };
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(top: 40, bottom: 10, left: 20, right: 20),
-      decoration: const BoxDecoration(
-        color: kHeaderBackground,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+    final avatarPath = _gender == 'male'
+        ? 'assets/images/male_avatar.png'
+        : 'assets/images/female_avatar.png';
+
+    return Scaffold(
+      backgroundColor: kDarkBackground,
+      appBar: AppBar(
+        backgroundColor: kHeaderBackground,
+        title: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: _selectedScreen,
+            hint: Text('Navigate...', style: TextStyle(color: kPrimaryText)),
+            items: _screens.keys
+                .map((name) => DropdownMenuItem(value: name, child: Text(name)))
+                .toList(),
+            onChanged: (val) {
+              if (val != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => _screens[val]!),
+                );
+              }
+            },
+            dropdownColor: kHeaderBackground,
+            icon: Icon(Icons.menu, color: kPrimaryText),
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        actions: [
+          Stack(
             children: [
-              Image.asset(
-                'assets/images/excelerate_logo.png',
-                width: 200,
-                fit: BoxFit.contain,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AccountScreen()),
-                  );
-                },
-                borderRadius: BorderRadius.circular(50),
-                child: const CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, color: Colors.black, size: 26),
+              IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationsScreen(),
+                  ),
                 ),
               ),
+              if (UserProgress.unreadCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: CircleAvatar(
+                    radius: 10,
+                    backgroundColor: kExcelerateOrange,
+                    child: Text(
+                      '${UserProgress.unreadCount}',
+                      style: TextStyle(fontSize: 10, color: kPrimaryText),
+                    ),
+                  ),
+                ),
             ],
           ),
-          const SizedBox(height: 20),
-          Text(
-            "Let's start learning",
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: kSecondaryText,
-              fontWeight: FontWeight.w500,
+          Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: CircleAvatar(
+              radius: 18,
+              backgroundImage: AssetImage(avatarPath),
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class LearningProgressCard extends StatelessWidget {
-  const LearningProgressCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const int currentProgress = 46;
-    const int totalGoal = 60;
-    final double progressFraction = currentProgress / totalGoal;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: kHeaderBackground,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha((0.2 * 255).round()),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Learned today',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: kSecondaryText,
-                    fontWeight: FontWeight.w500,
-                  ),
+            // WELCOME
+            Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [kExceleratePurple, kExcelerateViolet],
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CourseScreen()),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/excelerate_logo.png', height: 40),
+                  SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome Back!',
+                        style: GoogleFonts.poppins(
+                          color: kPrimaryText,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Keep learning, keep growing',
+                        style: TextStyle(
+                          color: kExcelerateLavender,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Text(
-                    'My courses',
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: kSecondaryText,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 5),
-            Text(
-              '$currentProgress min',
-              style: GoogleFonts.poppins(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: kPrimaryText,
+                ],
               ),
             ),
-            Text(
-              '/ $totalGoal min',
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: kSecondaryText,
-                fontWeight: FontWeight.w400,
+            SizedBox(height: 24),
+
+            // MY COURSES
+            _buildSectionTitle(
+              'My Courses',
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MyCoursesScreen()),
               ),
             ),
-            const SizedBox(height: 10),
-            Stack(
-              children: [
-                Container(
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: kProgressRemaining,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                FractionallySizedBox(
-                  widthFactor: progressFraction,
-                  child: Container(
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: kPurple,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ),
-              ],
+            UserProgress.enrolled.isEmpty
+                ? _buildEmptyCard('No courses yet. Start one!', Icons.school)
+                : _buildMyCoursesRow(context),
+            SizedBox(height: 24),
+
+            // CONTINUE LEARNING
+            _buildSectionTitle('Continue Learning', null),
+            ...UserProgress.enrolled
+                .take(3)
+                .map((p) => _buildContinueCard(context, p)),
+            SizedBox(height: 24),
+
+            // YOUR PROGRESS
+            _buildSectionTitle('Your Progress', null),
+            _buildStatsGrid(context),
+            SizedBox(height: 24),
+
+            // PEERS
+            _buildSectionTitle(
+              'Connect with Peers',
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PeerUsersScreen()),
+              ),
             ),
+            _buildPeerPreview(),
+            SizedBox(height: 24),
+
+            // RECOMMENDED
+            _buildSectionTitle(
+              'Recommended for You',
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CourseScreen()),
+              ),
+            ),
+            _buildRecommendedRow(context),
           ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, VoidCallback? onTap) => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: kExceleratePurple,
+        ),
+      ),
+      if (onTap != null)
+        TextButton(
+          onPressed: onTap,
+          child: Text('See all', style: TextStyle(color: kExcelerateOrange)),
+        ),
+    ],
+  );
+
+  Widget _buildEmptyCard(String text, IconData icon) => Container(
+    padding: EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: kHeaderBackground,
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Center(
+      child: Column(
+        children: [
+          Icon(icon, size: 50, color: kExcelerateOrange),
+          SizedBox(height: 8),
+          Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: kSecondaryText),
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _buildMyCoursesRow(BuildContext context) => SizedBox(
+    height: 100,
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: UserProgress.enrolled.length,
+      itemBuilder: (ctx, i) {
+        final p = UserProgress.enrolled[i];
+        return GestureDetector(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ProgramDetailsPage(program: p)),
+          ),
+          child: Container(
+            width: 140,
+            margin: EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [kExceleratePurple, kExcelerateViolet],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.asset(
+                    p.image ?? 'assets/images/placeholder.jpg',
+                    height: 60,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Text(
+                    p.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: kPrimaryText),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    ),
+  );
+
+  Widget _buildContinueCard(BuildContext context, Program p) {
+    final minutes = UserProgress.getTimeSpent(p);
+    return Card(
+      color: kHeaderBackground,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: AssetImage(
+            p.image ?? 'assets/images/placeholder.jpg',
+          ),
+        ),
+        title: Text(
+          p.title,
+          style: TextStyle(color: kPrimaryText, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          '$minutes min spent',
+          style: TextStyle(color: kSecondaryText),
+        ),
+        trailing: Text(
+          'Continue',
+          style: TextStyle(
+            color: kExcelerateOrange,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ProgramDetailsPage(program: p)),
         ),
       ),
     );
   }
-}
 
-class HorizontalLearningCards extends StatelessWidget {
-  const HorizontalLearningCards({super.key});
+  Widget _buildStatsGrid(BuildContext context) => GridView.count(
+    crossAxisCount: 2,
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    childAspectRatio: 3,
+    children: [
+      _buildStatCard(
+        'Courses',
+        '${UserProgress.enrolled.length}',
+        Icons.menu_book,
+        kExcelerateBlue,
+      ),
+      _buildStatCard(
+        'Favorites',
+        '${UserProgress.favorites.length}',
+        Icons.favorite,
+        kExcelerateOrange,
+      ),
+      _buildStatCard(
+        'Time Today',
+        '46 min',
+        Icons.access_time,
+        kExcelerateViolet,
+      ),
+      _buildStatCard(
+        'Alerts',
+        '${UserProgress.unreadCount}',
+        Icons.notifications,
+        kExceleratePurple,
+      ),
+    ],
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
-          child: Text(
-            'What do you want to learn today?',
-            style: GoogleFonts.poppins(
+  Widget _buildStatCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) => Card(
+    color: kHeaderBackground,
+    child: Padding(
+      padding: EdgeInsets.all(12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 30),
+          Text(
+            value,
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: kPrimaryText,
             ),
           ),
+          Text(label, style: TextStyle(color: kSecondaryText)),
+        ],
+      ),
+    ),
+  );
+
+  Widget _buildPeerPreview() => Card(
+    color: kHeaderBackground,
+    child: ListTile(
+      leading: CircleAvatar(
+        backgroundColor: kExcelerateBlue,
+        child: Icon(Icons.people, color: kPrimaryText),
+      ),
+      title: Text(
+        '12 peers in your courses',
+        style: TextStyle(color: kPrimaryText),
+      ),
+      trailing: Icon(Icons.arrow_forward_ios, color: kExcelerateOrange),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const PeerUsersScreen()),
+      ),
+    ),
+  );
+
+  Widget _buildRecommendedRow(BuildContext context) => SizedBox(
+    height: 180,
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: 5,
+      itemBuilder: (ctx, i) => Container(
+        width: 140,
+        margin: EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [kExcelerateViolet, kExceleratePurple],
+          ),
+          borderRadius: BorderRadius.circular(16),
         ),
-        SizedBox(
-          height: 200,
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              _buildLearningCard(
-                title: 'Start your UI/UX journey',
-                buttonText: 'Get Started',
-                backgroundColor: kLightBlueCard,
-                illustration: const Icon(
-                  Icons.palette_outlined,
-                  size: 100,
-                  color: kCardBlue,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CourseScreen()),
-                  );
-                },
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              child: Image.asset(
+                'assets/images/placeholder.jpg',
+                height: 90,
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
-              const SizedBox(width: 15),
-              _buildLearningCard(
-                title: 'Review your progress',
-                buttonText: 'Check Report',
-                backgroundColor: kCardRed,
-                illustration: const Icon(
-                  Icons.stacked_line_chart,
-                  size: 100,
-                  color: kPurple,
-                ),
-                onTap: () {},
+            ),
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  Text(
+                    'Course $i',
+                    style: TextStyle(
+                      color: kPrimaryText,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '2h • Live',
+                    style: TextStyle(color: kExcelerateLavender, fontSize: 11),
+                  ),
+                ],
               ),
-              const SizedBox(width: 15),
-              _buildLearningCard(
-                title: 'New: Mastering Figma',
-                buttonText: 'Enroll Now',
-                backgroundColor: kCardYellow,
-                illustration: const Icon(
-                  Icons.design_services_outlined,
-                  size: 100,
-                  color: kOrange,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CourseScreen()),
-                  );
-                },
-              ),
-              const SizedBox(width: 15),
-              _buildLearningCard(
-                title: 'Become a great coder',
-                buttonText: 'View Path',
-                backgroundColor: kCardGreen,
-                illustration: const Icon(
-                  Icons.code,
-                  size: 100,
-                  color: Colors.green,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CourseScreen()),
-                  );
-                },
-              ),
-              const SizedBox(width: 15),
-            ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  Widget _buildBottomNav(BuildContext context) => BottomAppBar(
+    color: kHeaderBackground,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _navItem(Icons.home, 'Home', true),
+        _navItem(
+          Icons.menu_book,
+          'Courses',
+          false,
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CourseScreen()),
+          ),
+        ),
+        _navItem(
+          Icons.message,
+          'Messages',
+          false,
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const MessageScreen()),
+          ),
+        ),
+        _navItem(
+          Icons.notifications,
+          'Alerts',
+          false,
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const NotificationsScreen()),
           ),
         ),
       ],
-    );
-  }
+    ),
+  );
 
-  Widget _buildLearningCard({
-    required String title,
-    required String buttonText,
-    required Color backgroundColor,
-    required Widget illustration,
-    required VoidCallback onTap,
-  }) {
-    return Container(
-      width: 280,
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(
-        children: [
-          Positioned(right: -20, bottom: -20, child: illustration),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 180,
-                child: Text(
-                  title,
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black.withAlpha((0.8 * 255).round()),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              ElevatedButton(
-                onPressed: onTap,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kOrange,
-                  foregroundColor: kPrimaryText,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10,
-                  ),
-                ),
-                child: Text(
-                  buttonText,
-                  style: GoogleFonts.poppins(fontSize: 14),
-                ),
-              ),
-            ],
+  Widget _navItem(
+    IconData icon,
+    String label,
+    bool active, [
+    VoidCallback? onTap,
+  ]) => InkWell(
+    onTap: onTap ?? () {},
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: active ? kExceleratePurple : kSecondaryText),
+        Text(
+          label,
+          style: TextStyle(
+            color: active ? kExceleratePurple : kSecondaryText,
+            fontSize: 10,
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class LearningPlanSection extends StatelessWidget {
-  const LearningPlanSection({super.key});
-
-  final List<Map<String, String>> planItems = const [
-    {'title': 'Packaging Design', 'progress': '40/48'},
-    {'title': 'Product Design', 'progress': '6/24'},
-    {'title': 'UX Research Principles', 'progress': '12/12'},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Learning Plan',
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: kPrimaryText,
-            ),
-          ),
-          const SizedBox(height: 15),
-          ...planItems.map((item) {
-            return _buildPlanItem(
-              title: item['title']!,
-              progress: item['progress']!,
-              isCompleted: item['title'] == 'UX Research Principles',
-            );
-          }),
-          const SizedBox(height: 10),
-          Center(
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CourseScreen()),
-                );
-              },
-              child: Text(
-                'more',
-                style: GoogleFonts.poppins(
-                  color: kPurple,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPlanItem({
-    required String title,
-    required String progress,
-    required bool isCompleted,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(
-            isCompleted ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: isCompleted ? Colors.green : kSecondaryText,
-            size: 24,
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: kPrimaryText,
-                decoration: isCompleted ? TextDecoration.lineThrough : null,
-                decorationColor: kSecondaryText,
-              ),
-            ),
-          ),
-          Text(
-            progress,
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: kSecondaryText,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MeetupBanner extends StatelessWidget {
-  const MeetupBanner({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          colors: [kMeetupStart, kMeetupEnd],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: kPurple.withAlpha((0.3 * 255).round()),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Meetup',
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  color: kPrimaryText,
-                ),
-              ),
-              const SizedBox(height: 5),
-              SizedBox(
-                width: 180,
-                child: Text(
-                  'Off-line exchange of learning experiences',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: kPrimaryText,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              const CircleAvatar(
-                backgroundColor: kAvatarRed,
-                radius: 15,
-                child: Icon(Icons.person, size: 18, color: kAvatarRedIcon),
-              ),
-              Transform.translate(
-                offset: const Offset(-8, 0),
-                child: const CircleAvatar(
-                  backgroundColor: kAvatarYellow,
-                  radius: 15,
-                  child: Icon(Icons.person, size: 18, color: kAvatarYellowIcon),
-                ),
-              ),
-              Transform.translate(
-                offset: const Offset(-16, 0),
-                child: const CircleAvatar(
-                  backgroundColor: kAvatarBlue,
-                  radius: 15,
-                  child: Icon(Icons.person, size: 18, color: kAvatarBlueIcon),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomBottomNavBar extends StatelessWidget {
-  const CustomBottomNavBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: kHeaderBackground,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.4 * 255).round()),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          const NavBarItem(icon: Icons.home, label: 'Home', isActive: true),
-          NavBarItem(
-            icon: Icons.menu_book,
-            label: 'Course',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CourseScreen()),
-              );
-            },
-          ),
-          NavBarItem(
-            icon: Icons.search,
-            label: 'Search',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SearchScreen()),
-              );
-            },
-          ),
-          NavBarItem(
-            icon: Icons.message,
-            label: 'Message',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MessageScreen()),
-              );
-            },
-          ),
-          NavBarItem(
-            icon: Icons.person,
-            label: 'Account',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AccountScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class NavBarItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isActive;
-  final VoidCallback? onTap;
-
-  const NavBarItem({
-    super.key,
-    required this.icon,
-    required this.label,
-    this.isActive = false,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? kBottomNavActive : kSecondaryText;
-
-    return InkWell(
-      onTap: onTap ?? () {},
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: GoogleFonts.poppins(
-              color: color,
-              fontSize: 11,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+      ],
+    ),
+  );
 }
