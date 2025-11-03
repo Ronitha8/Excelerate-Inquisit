@@ -1,3 +1,4 @@
+// lib/screens/account_screen.dart
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:excelerate_inquisit/constants.dart';
@@ -6,6 +7,9 @@ import 'package:excelerate_inquisit/screens/course_screen.dart';
 import 'package:excelerate_inquisit/screens/login_screen.dart';
 import 'package:excelerate_inquisit/screens/help_screen.dart';
 import 'package:excelerate_inquisit/screens/message_screen.dart';
+import 'package:excelerate_inquisit/screens/favorites_screen.dart';
+import 'package:excelerate_inquisit/user_progress.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -16,115 +20,140 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   User? user;
+  late TextEditingController _nameController;
+  late TextEditingController _bioController;
+  String _gender = 'male';
 
   @override
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
+    _nameController = TextEditingController(text: user?.displayName ?? 'User');
+    _bioController = TextEditingController(text: 'Aspiring learner');
+    _gender = user?.photoURL?.contains('female') == true ? 'female' : 'male';
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _bioController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _updateProfile() async {
+    final newName = _nameController.text.trim();
+    final newBio = _bioController.text.trim();
+    if (newName.isEmpty) return;
+
+    try {
+      await user?.updateDisplayName(newName);
+      final photoUrl = _gender == 'male'
+          ? 'assets/images/male_avatar.png'
+          : 'assets/images/female_avatar.png';
+      await user?.updatePhotoURL(photoUrl);
+
+      if (!mounted) return;
+      setState(() {});
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Profile updated!')));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final avatarPath = _gender == 'male'
+        ? 'assets/images/male_avatar.png'
+        : 'assets/images/female_avatar.png';
+
     return Scaffold(
       backgroundColor: kDarkBackground,
       appBar: AppBar(
         backgroundColor: kHeaderBackground,
         title: Text(
           'Account',
-          style: TextStyle(
+          style: GoogleFonts.poppins(
             color: kPrimaryText,
             fontWeight: FontWeight.bold,
-            fontSize: 20,
           ),
         ),
         centerTitle: true,
-        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // Profile Section
             Center(
               child: Column(
                 children: [
                   CircleAvatar(
-                    radius: 45,
-                    backgroundImage: user?.photoURL != null
-                        ? NetworkImage(user!.photoURL!)
-                        : const AssetImage('assets/images/profile_placeholder.png') as ImageProvider,
+                    radius: 60,
+                    backgroundColor: kExcelerateViolet,
+                    child: CircleAvatar(
+                      radius: 56,
+                      backgroundImage: AssetImage(avatarPath),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    user?.displayName ?? 'User Name',
-                    style: TextStyle(
-                      fontSize: 22,
+                    _nameController.text,
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: kPrimaryText,
                     ),
                   ),
-                  const SizedBox(height: 5),
                   Text(
-                    user?.email ?? 'user@example.com',
-                    style: TextStyle(color: kSecondaryText, fontSize: 14),
+                    user?.email ?? 'user@excelerate.co.za',
+                    style: TextStyle(color: kSecondaryText),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 30),
-            Divider(color: kProgressRemaining),
-            // Menu Options
+            Divider(color: kExcelerateLavender.withOpacity(0.3)),
             Expanded(
               child: ListView(
                 children: [
                   _buildOption(
-                    icon: Icons.favorite_border,
-                    title: 'Favourite',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Favorites not implemented yet')),
-                      );
-                    },
+                    icon: Icons.favorite,
+                    title: 'Favorites (${UserProgress.favorites.length})',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const FavoritesScreen(),
+                      ),
+                    ),
                   ),
                   _buildOption(
-                    icon: Icons.edit_outlined,
-                    title: 'Edit Account',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Edit Account not implemented yet')),
-                      );
-                    },
-                  ),
-                  _buildOption(
-                    icon: Icons.settings_outlined,
-                    title: 'Settings and Privacy',
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Settings not implemented yet')),
-                      );
-                    },
+                    icon: Icons.edit,
+                    title: 'Edit Profile',
+                    onTap: () => _showEditDialog(),
                   ),
                   _buildOption(
                     icon: Icons.help_outline,
                     title: 'Help',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const HelpScreen()),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const HelpScreen()),
+                    ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   _buildOption(
                     icon: Icons.logout,
                     title: 'Log Out',
                     color: Colors.redAccent,
                     onTap: () async {
-                      final navigator = Navigator.of(context);
                       await FirebaseAuth.instance.signOut();
                       if (!mounted) return;
-                      navigator.pushAndRemoveUntil(
+                      Navigator.pushAndRemoveUntil(
+                        context,
                         MaterialPageRoute(builder: (_) => const LoginScreen()),
                         (route) => false,
                       );
@@ -140,46 +169,122 @@ class _AccountScreenState extends State<AccountScreen> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: kHeaderBackground,
         currentIndex: 4,
-        selectedItemColor: kBottomNavActive,
+        selectedItemColor: kExcelerateOrange,
         unselectedItemColor: kSecondaryText,
         showUnselectedLabels: true,
         onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const HomeScreen()),
-              );
-              break;
-            case 1:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const CourseScreen()),
-              );
-              break;
-            case 2:
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Search not implemented yet')),
-              );
-              break;
-            case 3:
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const MessageScreen()),
-              );
-              break;
-            case 4:
-              // Already here
-              break;
+          final screens = [
+            const HomeScreen(),
+            const CourseScreen(),
+            null,
+            const MessageScreen(),
+            null,
+          ];
+          if (screens[index] != null && index != 4) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => screens[index]!),
+            );
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: 'Course'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book_outlined),
+            label: 'Course',
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-          BottomNavigationBarItem(icon: Icon(Icons.message_outlined), label: 'Message'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Account'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.message_outlined),
+            label: 'Message',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: 'Account',
+          ),
         ],
+      ),
+    );
+  }
+
+  void _showEditDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setStateDialog) => AlertDialog(
+          backgroundColor: kHeaderBackground,
+          title: Text('Edit Profile', style: TextStyle(color: kPrimaryText)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: TextStyle(color: kSecondaryText),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: kExcelerateLavender),
+                  ),
+                ),
+                style: TextStyle(color: kPrimaryText),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _bioController,
+                decoration: InputDecoration(
+                  labelText: 'Bio',
+                  labelStyle: TextStyle(color: kSecondaryText),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: kExcelerateLavender),
+                  ),
+                ),
+                style: TextStyle(color: kPrimaryText),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: _gender,
+                items: const [
+                  DropdownMenuItem(value: 'male', child: Text('Male')),
+                  DropdownMenuItem(value: 'female', child: Text('Female')),
+                ],
+                onChanged: (val) {
+                  if (val != null) {
+                    setStateDialog(() => _gender = val);
+                    setState(() {});
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: 'Gender',
+                  labelStyle: TextStyle(color: kSecondaryText),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: kExcelerateLavender),
+                  ),
+                ),
+                dropdownColor: kHeaderBackground,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('Cancel', style: TextStyle(color: kSecondaryText)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _updateProfile();
+                Navigator.pop(ctx);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: kExcelerateOrange,
+              ),
+              child: Text('Save', style: TextStyle(color: kPrimaryText)),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -194,17 +299,9 @@ class _AccountScreenState extends State<AccountScreen> {
       leading: Icon(icon, color: color),
       title: Text(
         title,
-        style: TextStyle(
-          color: color,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(color: color, fontWeight: FontWeight.w500),
       ),
-      trailing: Icon(
-        Icons.arrow_forward_ios,
-        color: kSecondaryText,
-        size: 16,
-      ),
+      trailing: Icon(Icons.arrow_forward_ios, color: kSecondaryText, size: 16),
       onTap: onTap,
     );
   }
