@@ -13,24 +13,28 @@ Excelerate Inquisit is a mobile app designed to extend the Excelerate learning e
 ---    
 
 ## 🧩 Core Features
-- **Login & Authentication:** Firebase Auth with email/password, feedback for invalid email, password < 6 characters ("Password must be at least 6 characters"), and success ("Login successful"). Includes Google/Facebook placeholders and password reset dialog.
-- **Dashboard:** Shows learning plan, enrolled courses, and Excelerate logo (`assets/images/excelerate_logo.jpg`).
-- **Program Listing:** Displays 6 rich courses (AI, Data Science, Cybersecurity, UI/UX, Cloud, Web Dev) from `assets/courses.json` with snackbar feedback ("Courses loaded successfully!" or "Error loading courses").
-- **Program Detail:** Shows course details (title, description, duration, level, instructor, image) with `placeholder.jpg` fallback.
-- **Search Button:** For searching courses/internships (pending implementation).
-- **Message Screen:** For notifications and messages (pending implementation).
-- **Profile Page:** For user info, settings, privacy, help, logout (pending implementation).
+- Firebase Auth (Login/Signup)  
+- Edit Profile (Name, Bio, Gender, Avatar)  
+- My Courses → Weekly Schedule + Live Chips  
+- Continue Learning + Time Tracking  
+- Peer Chat (Real-time, unread badges, typing    visible)  
+- Favorites + Notifications  
+- 10 Real Programs (loaded from `courses.json`)  
+- Dark Mode + Excelerate Official Colors
 
 ---    
 
-## 🧰 Tools & Technologies
-- **Framework:** Flutter
-- **Language:** Dart
-- **Authentication:** Firebase Auth
-- **Data Source:** Local JSON (`assets/courses.json`)
-- **Design Tool:** Figma
-- **Version Control:** GitHub
-- **Dependencies:** `google_fonts: ^6.2.1`, `font_awesome_flutter: ^11.0.0`, `firebase_core: ^3.6.0`, `firebase_auth: ^5.3.1`
+## TESTED & WORKS ON
+- Samsung Galaxy A51 (Android 13) — Real device  
+- Pixel 7 Emulator (Android 14) — VS Code  
+- Chrome Web (1920×1080)  
+
+## TECH STACK
+- Flutter 3.24+  
+- Firebase Auth  
+- Google Fonts (Poppins)  
+- State: `UserProgress` (singleton)  
+- Assets: Avatars, Logo, Placeholder
 
 ---
 
@@ -40,25 +44,7 @@ Excelerate Inquisit is a mobile app designed to extend the Excelerate learning e
 3. Configure Firebase:
    - Add `google-services.json` to `android/app` (for Android).
    - Update `lib/main.dart` with FirebaseOptions (for web).
-4. Run the app: `flutter run -d chrome`
-
----
-
-## Assets
-- Images: `assets/images/` (e.g., `excelerate_logo.png`, `ai.jpg`, `placeholder.jpg`)
-- Data: `assets/courses.json` (program details)
-
----
-
-## Dependencies
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  firebase_core: ^3.6.0
-  firebase_auth: ^5.3.1
-  google_fonts: ^6.2.1
-  font_awesome_flutter: ^10.12.0
+4. Run the app: `flutter run`
 
 ---
 
