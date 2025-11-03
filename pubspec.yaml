@@ -25,6 +25,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/
     - assets/courses.json
     - assets/images/Excelerate_logo.png
     - assets/images/ai.jpg
@@ -34,3 +35,5 @@ flutter:
     - assets/images/cloud.jpg
     - assets/images/web_dev.jpg
     - assets/images/placeholder.jpg
+    - assets/images/male_avatar.png
+    - assets/images/female_avatar.png
